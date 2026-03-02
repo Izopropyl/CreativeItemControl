@@ -1,0 +1,11 @@
+name: CreativeItemControl
+version: '1.0-SNAPSHOT'
+main: net.kingidk.creativeItemControl.CreativeItemControl
+api-version: '1.21'
+authors: [ Kingidk ]
+commands:
+  cic:
+    description: Reload CreativeItemControl config
+    usage: /cic reload
+    permission: creativeitemcontrol.reload
+    permission-message: You do not have permission

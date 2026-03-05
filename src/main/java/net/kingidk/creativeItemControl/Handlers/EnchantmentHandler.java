@@ -3,7 +3,6 @@ package net.kingidk.creativeItemControl.Handlers;
 import net.kingidk.creativeItemControl.CreativeItemControl;
 
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -19,7 +18,7 @@ public class EnchantmentHandler {
         this.plugin = plugin;
     }
 
-    public boolean shouldDelete(ItemMeta meta, ItemStack item, Player p) {
+    public boolean shouldDelete(ItemMeta meta, ItemStack item) {
         Map<Enchantment, Integer> enchants = meta.getEnchants();
         Set<Enchantment> seen = new HashSet<>();
 
@@ -38,7 +37,7 @@ public class EnchantmentHandler {
 
 
 
-    public ItemMeta changeEnchants(ItemMeta meta, ItemStack item, Player p) {
+    public ItemMeta changeEnchants(ItemMeta meta, ItemStack item) {
         Map<Enchantment, Integer> enchants = meta.getEnchants();
         Set<Enchantment> seen = new HashSet<>();
 
@@ -48,14 +47,20 @@ public class EnchantmentHandler {
 
 
 
-            if (checkIncompatible(enchantment, seen) || checkIncompatibleItem(item, enchantment)) {
+            if (checkIncompatibleItem(item, enchantment)) {
                 meta.removeEnchant(enchantment);
                 continue;
             }
+            if (!plugin.enchantmentsAllowIncompatible && checkIncompatible(enchantment, seen)) {
+                meta.removeEnchant(enchantment);
+                continue;
+            }
+
+
             if (checkImpossibleLevel(enchantment, level)) {
 
 
-                if (plugin.getConfig().getString("enchantments.action", "REMOVE").equalsIgnoreCase("REMOVE")) {
+                if (plugin.enchantmentsAction.equals("REMOVE")) {
                     meta.removeEnchant(enchantment);
                     continue;
                 }

@@ -3,18 +3,14 @@
 # with creative mode worlds or servers
 
 toggles:
-  master: false # False:
+  master: true # False:
   enchantments: true # Block impossible enchants
   attributes: true # Block impossible attribute modifiers
-  components: true # Block other impossible data components
   playeralerts: true # Send alerts to player attempting to get the item
-  staffalerts: true # Send alerts to anyone with nbtmanager.alerts permission
 
 config:
   worlds: # Worlds in which the plugin is active
-    - world
-    - world_nether
-    - world_the_end
+    - example
   blacklist: false # If true, above worlds config will act as a blacklist
 
 
@@ -26,9 +22,7 @@ enchantments:
   # REMOVE - Remove enchantments from the item all-together
   # DELETE - Delete the item
   action: LOWER
-  allow-incompatible: true # Whether or not to allow incompatible enchantments (Sharpness with Smite, Infinity with Mending, etc)
-  allowed-enchantments: # Allow specific enchantments, up to a certain level
-    - sharpness 7
+  allow-incompatible: false # Whether or not to allow incompatible enchantments (Sharpness with Smite, Infinity with Mending, etc)
 
 attributes:
   # By default, no attribute modifying items will be allowed
@@ -36,29 +30,6 @@ attributes:
   # REMOVE - Remove the attribute modifiers from the item
   # DELETE - Delete the item
   action: DELETE
-
-  allowed-attributes: # You can list as many attributes as you like, copying this format.
-    scale:
-      type: "minecraft:scale" # Attribute type
-      id: "*" # Place any id string in the parenthesis, or use "*" to allow any id
-      operation: add_value # Operation for modifier. Can be add_value, add_multiplied_base, or add_multiplied_total
-      slot: any # Block per-slot
-      amount: 1 # use "*" to allow any amount
-      deviation: 0 # Allow x amount of deviation from the attribute amount. If amount is 1 and deviation is .5, will allow 0.5 - 1.5
-
-
-  # Extra info about attributes if needed
-  # https://minecraft.wiki/w/Item_format/Attribute_Modifiers
-  # https://minecraft.wiki/w/Attribute
-
-components:
-
-  blacklist: false # Does targets list act as blacklist
-
-  targets: # Components to target
-    blocksattacks:
-      component: "minecraft:blocks_attacks"
-      value: {disable_cooldown_scale:3} # Specific value to deny. Leave {*} to deny any value. EXTREMELY SPECIFIC
 
 
 

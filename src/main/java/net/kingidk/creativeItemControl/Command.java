@@ -18,6 +18,7 @@ public class Command implements CommandExecutor {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             commandSender.sendMessage(Component.text("ComponentControl config reloaded!", NamedTextColor.GREEN));
             plugin.reloadConfig();
+            plugin.loadConfigCache();
             return true;
         }
 

@@ -9,3 +9,13 @@ commands:
     usage: /cic reload
     permission: creativeitemcontrol.reload
     permission-message: You do not have permission
+permissions:
+  cic.bypass.*:
+    description: Bypass all checks
+    default: op
+  cic.bypass.enchantments:
+    description: Bypass enchantment checks
+    default: op
+  cic.bypass.attributes:
+    description: Bypass attribute checks
+    default: op

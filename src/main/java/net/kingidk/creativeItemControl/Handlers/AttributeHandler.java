@@ -5,7 +5,6 @@ import net.kingidk.creativeItemControl.ItemCheckContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.GameMode;
 
 
 public class AttributeHandler implements ItemCheck{

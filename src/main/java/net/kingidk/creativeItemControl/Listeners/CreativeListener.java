@@ -43,7 +43,7 @@ public class CreativeListener implements Listener {
         boolean isDrop = e.getSlot() < 0;
 
         ItemStack item = e.getCursor();
-        if (item == null || item.getType().isAir()) return;
+        if (item.getType().isAir()) return;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
         ItemMeta originalMeta = meta.clone();

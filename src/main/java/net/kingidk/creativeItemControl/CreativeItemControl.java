@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public final class CreativeItemControl extends JavaPlugin {
 
@@ -55,7 +56,7 @@ public final class CreativeItemControl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CreativeListener(this), this);
         getServer().getPluginManager().registerEvents(new InventorySlotListener(this), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(this), this);
-        getCommand("cic").setExecutor(new Command(this));
+        Objects.requireNonNull(getCommand("cic")).setExecutor(new Command(this));
     }
 
     @Override

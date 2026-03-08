@@ -77,6 +77,7 @@ public class EnchantmentHandler implements ItemCheck{
 
 
     public boolean incompatibleEnchantment(ItemCheckContext ctx, Enchantment enchantment, Set<Enchantment> seen) {
+        if (plugin.enchantmentsAllowIncompatible) return false;
         for (Enchantment e : seen) {
             if (enchantment.conflictsWith(e)) {
                 switch (plugin.enchantmentsAction) {
@@ -91,3 +92,4 @@ public class EnchantmentHandler implements ItemCheck{
         return false;
     }
 }
+

@@ -38,7 +38,7 @@ public class InventorySlotListener implements Listener {
 
 
         ItemStack item = e.getNewItemStack();
-        if (item == null || item.getType().isAir()) return;
+        if (item.getType().isAir()) return;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 

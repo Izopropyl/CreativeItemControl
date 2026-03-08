@@ -2,15 +2,16 @@ package net.kingidk.creativeItemControl.Handlers;
 
 import net.kingidk.creativeItemControl.CreativeItemControl;
 
+import net.kingidk.creativeItemControl.ItemCheckContext;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class EnchantmentHandler {
+public class EnchantmentHandler implements ItemCheck{
 
     private final CreativeItemControl plugin;
 
@@ -18,74 +19,74 @@ public class EnchantmentHandler {
         this.plugin = plugin;
     }
 
-    public boolean shouldDelete(ItemMeta meta, ItemStack item) {
-        Map<Enchantment, Integer> enchants = meta.getEnchants();
+    @Override
+    public void check(ItemCheckContext ctx) {
+        if (!plugin.enchantmentsEnabled) return;
+        if (ctx.player.hasPermission("cic.bypass.enchantments")) return;
+
+        Map<Enchantment, Integer> enchants = ctx.meta.getEnchants();
         Set<Enchantment> seen = new HashSet<>();
 
-        for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-            Enchantment enchantment = entry.getKey();
-            int level = entry.getValue();
-
-            if (checkIncompatibleItem(item, enchantment)) return true;
-            if (checkImpossibleLevel(enchantment, level)) return true;
-            if (checkIncompatible(enchantment, seen)) return true;
-            seen.add(enchantment);
-        }
-        return false;
-
-    }
-
-
-
-    public ItemMeta changeEnchants(ItemMeta meta, ItemStack item) {
-        Map<Enchantment, Integer> enchants = meta.getEnchants();
-        Set<Enchantment> seen = new HashSet<>();
+        boolean found = false;
 
         for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
             Enchantment enchantment = entry.getKey();
             int level = entry.getValue();
 
 
-
-            if (checkIncompatibleItem(item, enchantment)) {
-                meta.removeEnchant(enchantment);
-                continue;
-            }
-            if (!plugin.enchantmentsAllowIncompatible && checkIncompatible(enchantment, seen)) {
-                meta.removeEnchant(enchantment);
-                continue;
-            }
+            if (impossibleLevel(ctx, enchantment, level)) found = true;
+            if (incompatibleItem(ctx, enchantment)) found = true;
+            if (incompatibleEnchantment(ctx, enchantment, seen)) found = true;
 
 
-            if (checkImpossibleLevel(enchantment, level)) {
 
 
-                if (plugin.enchantmentsAction.equals("REMOVE")) {
-                    meta.removeEnchant(enchantment);
-                    continue;
-                }
-
-                int maxLevel = enchantment.getMaxLevel();
-                meta.addEnchant(enchantment, maxLevel, true);
-
-            }
             seen.add(enchantment);
-
         }
-        return meta;
+        if (found && plugin.playerAlerts) {
+            ctx.player.sendMessage(Component.text("Items with impossible enchantments are not allowed!", NamedTextColor.RED));
+        }
+
+
+
+    }
+    public boolean incompatibleItem(ItemCheckContext ctx, Enchantment enchantment) {
+        if (!enchantment.canEnchantItem(ctx.item)) {
+            switch (plugin.enchantmentsAction) {
+                case LOWER, REMOVE -> ctx.meta.removeEnchant(enchantment);
+                case DELETE -> ctx.cancel();
+                case null, default -> {}
+            }
+            return true;
+        } else return false;
+    }
+
+    public boolean impossibleLevel(ItemCheckContext ctx, Enchantment enchantment, int level) {
+        if (level > enchantment.getMaxLevel()) {
+            switch (plugin.enchantmentsAction) {
+                case LOWER -> ctx.meta.addEnchant(enchantment, enchantment.getMaxLevel(), true);
+                case REMOVE -> ctx.meta.removeEnchant(enchantment);
+                case DELETE -> ctx.cancel();
+                case null, default -> {}
+            }
+            return true;
+        } else return false;
+    }
+
+
+    public boolean incompatibleEnchantment(ItemCheckContext ctx, Enchantment enchantment, Set<Enchantment> seen) {
+        if (seen.stream().anyMatch(e -> enchantment.conflictsWith((Enchantment) e))) {
+            switch (plugin.enchantmentsAction) {
+                case LOWER, REMOVE -> ctx.meta.removeEnchant(enchantment);
+                case DELETE -> ctx.cancel();
+                case null, default -> {}
+            }
+            return true;
+        } else return false;
+
+
     }
 
 
 
-    public boolean checkIncompatible(Enchantment enchant, Set<Enchantment> seen) {
-        return seen.stream().anyMatch(e -> enchant.conflictsWith((Enchantment) e));
-    }
-
-    public boolean checkImpossibleLevel(Enchantment enchant, int level) {
-        return level > enchant.getMaxLevel();
-    }
-
-    public boolean checkIncompatibleItem(ItemStack item, Enchantment enchant) {
-        return !enchant.canEnchantItem(item);
-    }
 }

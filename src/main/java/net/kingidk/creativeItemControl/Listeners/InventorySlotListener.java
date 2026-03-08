@@ -1,5 +1,6 @@
 package net.kingidk.creativeItemControl.Listeners;
 
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import net.kingidk.creativeItemControl.CreativeItemControl;
 import net.kingidk.creativeItemControl.Handlers.AttributeHandler;
 import net.kingidk.creativeItemControl.Handlers.EnchantmentHandler;
@@ -7,52 +8,43 @@ import net.kingidk.creativeItemControl.Handlers.PotionHandler;
 import net.kingidk.creativeItemControl.ItemCheckContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CreativeListener implements Listener {
-
+public class InventorySlotListener implements Listener {
     private final CreativeItemControl plugin;
     private final AttributeHandler attributeHandler;
     private final PotionHandler potionHandler;
     private final EnchantmentHandler enchantmentHandler;
 
-    public CreativeListener(CreativeItemControl plugin) {
+    public InventorySlotListener(CreativeItemControl plugin) {
         this.plugin = plugin;
         this.attributeHandler = new AttributeHandler(plugin);
         this.potionHandler = new PotionHandler(plugin);
         this.enchantmentHandler = new EnchantmentHandler(plugin);
     }
-
     @EventHandler
-    public void  onCreativeInventory(InventoryCreativeEvent e) {
+    public void onInventorySlotChange(PlayerInventorySlotChangeEvent e) {
         if (!plugin.masterEnabled) return;
+        if (e.getSlot() < 0) return;
+        if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) return;
 
-
-
-        boolean inList = plugin.worlds.contains(e.getWhoClicked().getWorld().getName());
+        boolean inList = plugin.worlds.contains(e.getPlayer().getWorld().getName());
         if (plugin.worldsBlacklist == inList) return;
 
-        if (e.getWhoClicked().hasPermission("cic.bypass")) return;
+        if (e.getPlayer().hasPermission("cic.bypass")) return;
 
 
-
-        // Setup Item Information
-        boolean isDrop = e.getSlot() < 0;
-
-        ItemStack item = e.getCursor();
+        ItemStack item = e.getNewItemStack();
         if (item == null || item.getType().isAir()) return;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
-        ItemMeta originalMeta = meta.clone();
 
-
-
-        Player p = (Player) e.getWhoClicked();
+        Player p = (Player) e.getPlayer();
         // Get default meta for item type
         ItemMeta def = new ItemStack(item.getType(), 1).getItemMeta();
 
@@ -65,26 +57,14 @@ public class CreativeListener implements Listener {
         potionHandler.check(ctx);
         enchantmentHandler.check(ctx);
 
-        boolean wasModified = !ctx.meta.equals(originalMeta);
-
         if (ctx.isCancelled()) {
-            e.setCancelled(true);
-        } else if (isDrop) {
-            if (wasModified) e.setCancelled(true);
+            p.getInventory().setItem(e.getSlot(), null);
         } else {
             item.setItemMeta(ctx.newItemMeta());
             p.getInventory().setItem(e.getSlot(), item);
         }
 
-
-
-
-
-
-
-
-
-
-
     }
+
+
 }

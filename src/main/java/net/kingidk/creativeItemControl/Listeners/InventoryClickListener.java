@@ -7,33 +7,33 @@ import net.kingidk.creativeItemControl.Handlers.PotionHandler;
 import net.kingidk.creativeItemControl.ItemCheckContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CreativeListener implements Listener {
+public class InventoryClickListener implements Listener {
 
     private final CreativeItemControl plugin;
     private final AttributeHandler attributeHandler;
     private final PotionHandler potionHandler;
     private final EnchantmentHandler enchantmentHandler;
 
-    public CreativeListener(CreativeItemControl plugin) {
+
+    public InventoryClickListener(CreativeItemControl plugin) {
         this.plugin = plugin;
         this.attributeHandler = new AttributeHandler(plugin);
         this.potionHandler = new PotionHandler(plugin);
         this.enchantmentHandler = new EnchantmentHandler(plugin);
     }
-
     @EventHandler
-    public void  onCreativeInventory(InventoryCreativeEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (!plugin.masterEnabled) return;
-
-
-
+        if (e.getSlot() < 0) return;
+        if (!e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) return;
         boolean inList = plugin.worlds.contains(e.getWhoClicked().getWorld().getName());
         if (plugin.worldsBlacklist == inList) return;
 
@@ -41,16 +41,19 @@ public class CreativeListener implements Listener {
 
 
 
-        // Setup Item Information
-        boolean isDrop = e.getSlot() < 0;
 
-        ItemStack item = e.getCursor();
+
+
+
+        ItemStack item = switch (e.getAction()) {
+            case PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, MOVE_TO_OTHER_INVENTORY,
+                 HOTBAR_SWAP -> e.getCurrentItem();
+            default -> null;
+        };
+
         if (item == null || item.getType().isAir()) return;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
-        ItemMeta originalMeta = meta.clone();
-
-
 
         Player p = (Player) e.getWhoClicked();
         // Get default meta for item type
@@ -65,26 +68,11 @@ public class CreativeListener implements Listener {
         potionHandler.check(ctx);
         enchantmentHandler.check(ctx);
 
-        boolean wasModified = !ctx.meta.equals(originalMeta);
 
         if (ctx.isCancelled()) {
             e.setCancelled(true);
-        } else if (isDrop) {
-            if (wasModified) e.setCancelled(true);
         } else {
-            item.setItemMeta(ctx.newItemMeta());
-            p.getInventory().setItem(e.getSlot(), item);
+            e.getCurrentItem().setItemMeta(ctx.newItemMeta());
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }

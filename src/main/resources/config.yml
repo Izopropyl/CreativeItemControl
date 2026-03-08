@@ -6,6 +6,7 @@ toggles:
   master: true # False:
   enchantments: true # Block impossible enchants
   attributes: true # Block impossible attribute modifiers
+  potions: true # Block custom potions
   playeralerts: true # Send alerts to player attempting to get the item
 
 config:
@@ -30,7 +31,6 @@ attributes:
   # REMOVE - Remove the attribute modifiers from the item
   # DELETE - Delete the item
   action: DELETE
-
 
 
 

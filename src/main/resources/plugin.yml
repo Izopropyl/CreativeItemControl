@@ -19,3 +19,6 @@ permissions:
   cic.bypass.attributes:
     description: Bypass attribute checks
     default: op
+  cic.bypass.potions:
+    description: Bypass custom potion checks
+    default: op

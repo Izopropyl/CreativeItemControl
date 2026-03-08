@@ -1,7 +1,6 @@
 package net.kingidk.creativeItemControl.Handlers;
 
-public class DataHandler {
-    public void
-
-
+public enum AttributeAction {
+    REMOVE,
+    DELETE
 }

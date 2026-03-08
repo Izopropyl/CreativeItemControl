@@ -6,8 +6,6 @@ import net.kingidk.creativeItemControl.Handlers.AttributeHandler;
 import net.kingidk.creativeItemControl.Handlers.EnchantmentHandler;
 import net.kingidk.creativeItemControl.Handlers.PotionHandler;
 import net.kingidk.creativeItemControl.ItemCheckContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,13 +42,12 @@ public class InventorySlotListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        Player p = (Player) e.getPlayer();
-        // Get default meta for item type
-        ItemMeta def = new ItemStack(item.getType(), 1).getItemMeta();
+        Player p = e.getPlayer();
 
 
 
-        if (meta.equals(def)) return;
+        if (meta.equals(plugin.getDefaultMeta(item.getType()))) return;
+
         ItemCheckContext ctx = new ItemCheckContext(p, item, meta, e.getSlot());
 
         attributeHandler.check(ctx);

@@ -18,6 +18,7 @@ public class AttributeHandler implements ItemCheck{
 
     @Override
     public void check(ItemCheckContext ctx) {
+        if (ctx.isCancelled()) return;
         if (!plugin.attributesEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.attributes")) return;
 

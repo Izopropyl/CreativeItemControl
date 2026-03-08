@@ -5,8 +5,6 @@ import net.kingidk.creativeItemControl.Handlers.AttributeHandler;
 import net.kingidk.creativeItemControl.Handlers.EnchantmentHandler;
 import net.kingidk.creativeItemControl.Handlers.PotionHandler;
 import net.kingidk.creativeItemControl.ItemCheckContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,12 +51,10 @@ public class CreativeListener implements Listener {
 
 
         Player p = (Player) e.getWhoClicked();
-        // Get default meta for item type
-        ItemMeta def = new ItemStack(item.getType(), 1).getItemMeta();
 
 
+        if (meta.equals(plugin.getDefaultMeta(item.getType()))) return;
 
-        if (meta.equals(def)) return;
         ItemCheckContext ctx = new ItemCheckContext(p, item, meta, e.getSlot());
 
         attributeHandler.check(ctx);
@@ -74,6 +70,7 @@ public class CreativeListener implements Listener {
         } else {
             item.setItemMeta(ctx.newItemMeta());
             p.getInventory().setItem(e.getSlot(), item);
+            p.updateInventory();
         }
 
 

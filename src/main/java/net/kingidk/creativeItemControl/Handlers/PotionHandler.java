@@ -17,6 +17,7 @@ public class PotionHandler implements ItemCheck {
 
     @Override
     public void check(ItemCheckContext ctx) {
+        if (ctx.isCancelled()) return;
         if (!plugin.potionsEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.potions")) return;
 

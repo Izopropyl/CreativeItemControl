@@ -5,6 +5,7 @@ import net.kingidk.creativeItemControl.CreativeItemControl;
 import net.kingidk.creativeItemControl.ItemCheckContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class EnchantmentHandler implements ItemCheck{
 
     @Override
     public void check(ItemCheckContext ctx) {
+        if (ctx.isCancelled()) return;
         if (!plugin.enchantmentsEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.enchantments")) return;
 
@@ -44,7 +46,7 @@ public class EnchantmentHandler implements ItemCheck{
             seen.add(enchantment);
         }
         if (found && plugin.playerAlerts) {
-            ctx.player.sendMessage(Component.text("Items with impossible enchantments are not allowed!", NamedTextColor.RED));
+            ctx.player.sendMessage(Component.text("Items with impossible enchantments are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
         }
 
 
@@ -75,18 +77,17 @@ public class EnchantmentHandler implements ItemCheck{
 
 
     public boolean incompatibleEnchantment(ItemCheckContext ctx, Enchantment enchantment, Set<Enchantment> seen) {
-        if (seen.stream().anyMatch(e -> enchantment.conflictsWith((Enchantment) e))) {
-            switch (plugin.enchantmentsAction) {
-                case LOWER, REMOVE -> ctx.meta.removeEnchant(enchantment);
-                case DELETE -> ctx.cancel();
-                case null, default -> {}
+        for (Enchantment e : seen) {
+            if (enchantment.conflictsWith(e)) {
+                switch (plugin.enchantmentsAction) {
+                    case LOWER, REMOVE -> ctx.meta.removeEnchant(enchantment);
+                    case DELETE -> ctx.cancel();
+                    case null, default -> {
+                    }
+                }
+                return true;
             }
-            return true;
-        } else return false;
-
-
+        }
+        return false;
     }
-
-
-
 }

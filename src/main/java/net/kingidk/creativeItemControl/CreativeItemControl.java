@@ -40,17 +40,17 @@ public final class CreativeItemControl extends JavaPlugin {
 
 
     public void loadConfigCache() {
-        masterEnabled = getConfig().getBoolean("toggles.master");
-        attributesEnabled = getConfig().getBoolean("toggles.attributes");
-        enchantmentsEnabled = getConfig().getBoolean("toggles.enchantments");
-        potionsEnabled = getConfig().getBoolean("toggles.potions");
-        componentsEnabled = getConfig().getBoolean("toggles.components");
+        masterEnabled = getConfig().getBoolean("config.enabled");
+        attributesEnabled = getConfig().getBoolean("attributes.enabled");
+        enchantmentsEnabled = getConfig().getBoolean("enchantments.enabled");
+        potionsEnabled = getConfig().getBoolean("potions.enabled");
+        componentsEnabled = getConfig().getBoolean("components.enabled");
         attributesAction = AttributeAction.valueOf(getConfig().getString("attributes.action", "REMOVE"));
         enchantmentsAction = EnchantAction.valueOf(getConfig().getString("enchantments.action", "REMOVE"));
         enchantmentsAllowIncompatible = getConfig().getBoolean("enchantments.allow-incompatible");
         worlds = getConfig().getStringList("config.worlds");
         worldsBlacklist = getConfig().getBoolean("config.blacklist");
-        playerAlerts = getConfig().getBoolean("toggles.playeralerts");
+        playerAlerts = getConfig().getBoolean("config.playeralerts");
         components = getConfig().getStringList("components.blocked");
 
     }

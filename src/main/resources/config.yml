@@ -2,15 +2,10 @@
 # This plugin is designed to give full control over item data to server administrators, especially those
 # with creative mode worlds or servers
 
-toggles:
-  master: true # False:
-  enchantments: true # Block impossible enchants
-  attributes: true # Block impossible attribute modifiers
-  potions: true # Block custom potions
-  components: false # EXPERIMENTAL: Block certain components (Must be configured)
-  playeralerts: true # Send alerts to player attempting to get the item
-
 config:
+  enabled: true # Is plugin enabled?
+  playeralerts: true # Send a message to the player attempting to get the item
+
   worlds: # Worlds in which the plugin is active
     - example
   blacklist: false # If true, above worlds config will act as a blacklist
@@ -23,6 +18,7 @@ enchantments:
   # LOWER - Set enchants to the highest possible value for that item
   # REMOVE - Remove enchantments from the item all-together
   # DELETE - Delete the item
+  enabled: true # Enable enchantment checks?
   action: LOWER
   allow-incompatible: false # Whether or not to allow incompatible enchantments (Sharpness with Smite, Infinity with Mending, etc)
 
@@ -31,13 +27,18 @@ attributes:
   # Action to take when attribute modifiers are found. Options:
   # REMOVE - Remove the attribute modifiers from the item
   # DELETE - Delete the item
+  enabled: true
   action: DELETE
+
+potions:
+  enabled: true
 
 
 components:
+  # Warning, directly blocking components can have unintended consequences, including MANY false positives.
+  # Use only if you know what you're doing
+  enabled: false
   blocked: # Blocked components
-      # Warning, directly blocking components could have unintended consequences, including myriad false positives.
-      # Use at your own risk
     - minecraft:example_component
 
 

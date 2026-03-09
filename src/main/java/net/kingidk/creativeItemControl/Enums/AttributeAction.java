@@ -1,4 +1,4 @@
-package net.kingidk.creativeItemControl.Handlers;
+package net.kingidk.creativeItemControl.Enums;
 
 public enum AttributeAction {
     REMOVE,

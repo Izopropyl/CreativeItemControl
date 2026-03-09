@@ -3,6 +3,7 @@ package net.kingidk.creativeItemControl.Listeners;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import net.kingidk.creativeItemControl.CreativeItemControl;
 import net.kingidk.creativeItemControl.Handlers.AttributeHandler;
+import net.kingidk.creativeItemControl.Handlers.ComponentHandler;
 import net.kingidk.creativeItemControl.Handlers.EnchantmentHandler;
 import net.kingidk.creativeItemControl.Handlers.PotionHandler;
 import net.kingidk.creativeItemControl.ItemCheckContext;
@@ -18,12 +19,14 @@ public class InventorySlotListener implements Listener {
     private final AttributeHandler attributeHandler;
     private final PotionHandler potionHandler;
     private final EnchantmentHandler enchantmentHandler;
+    private final ComponentHandler componentHandler;
 
     public InventorySlotListener(CreativeItemControl plugin) {
         this.plugin = plugin;
         this.attributeHandler = new AttributeHandler(plugin);
         this.potionHandler = new PotionHandler(plugin);
         this.enchantmentHandler = new EnchantmentHandler(plugin);
+        this.componentHandler = new ComponentHandler(plugin);
     }
     @EventHandler
     public void onInventorySlotChange(PlayerInventorySlotChangeEvent e) {
@@ -53,6 +56,7 @@ public class InventorySlotListener implements Listener {
         attributeHandler.check(ctx);
         potionHandler.check(ctx);
         enchantmentHandler.check(ctx);
+        componentHandler.check(ctx);
 
         if (ctx.isCancelled()) {
             p.getInventory().setItem(e.getSlot(), null);

@@ -7,7 +7,7 @@ commands:
   cic:
     description: Reload CreativeItemControl config
     usage: /cic reload
-    permission: creativeitemcontrol.reload
+    permission: cic.reload
     permission-message: You do not have permission
 permissions:
   cic.bypass.*:
@@ -21,4 +21,10 @@ permissions:
     default: op
   cic.bypass.potions:
     description: Bypass custom potion checks
+    default: op
+  cic.bypass.components:
+    description: Bypass component checks
+    default: op
+  cic.reload:
+    description: Reload command
     default: op

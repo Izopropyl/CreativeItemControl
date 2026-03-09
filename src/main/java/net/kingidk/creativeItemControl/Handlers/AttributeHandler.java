@@ -1,6 +1,7 @@
 package net.kingidk.creativeItemControl.Handlers;
 
 import net.kingidk.creativeItemControl.CreativeItemControl;
+import net.kingidk.creativeItemControl.Enums.AttributeAction;
 import net.kingidk.creativeItemControl.ItemCheckContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

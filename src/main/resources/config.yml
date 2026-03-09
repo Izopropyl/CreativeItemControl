@@ -7,6 +7,7 @@ toggles:
   enchantments: true # Block impossible enchants
   attributes: true # Block impossible attribute modifiers
   potions: true # Block custom potions
+  components: false # EXPERIMENTAL: Block certain components (Must be configured)
   playeralerts: true # Send alerts to player attempting to get the item
 
 config:
@@ -31,6 +32,16 @@ attributes:
   # REMOVE - Remove the attribute modifiers from the item
   # DELETE - Delete the item
   action: DELETE
+
+
+components:
+  blocked: # Blocked components
+      # Warning, directly blocking components could have unintended consequences, including myriad false positives.
+      # Use at your own risk
+    - minecraft:example_component
+
+
+
 
 
 

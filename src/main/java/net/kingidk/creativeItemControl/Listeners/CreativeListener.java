@@ -2,6 +2,7 @@ package net.kingidk.creativeItemControl.Listeners;
 
 import net.kingidk.creativeItemControl.CreativeItemControl;
 import net.kingidk.creativeItemControl.Handlers.AttributeHandler;
+import net.kingidk.creativeItemControl.Handlers.ComponentHandler;
 import net.kingidk.creativeItemControl.Handlers.EnchantmentHandler;
 import net.kingidk.creativeItemControl.Handlers.PotionHandler;
 import net.kingidk.creativeItemControl.ItemCheckContext;
@@ -18,12 +19,14 @@ public class CreativeListener implements Listener {
     private final AttributeHandler attributeHandler;
     private final PotionHandler potionHandler;
     private final EnchantmentHandler enchantmentHandler;
+    private final ComponentHandler componentHandler;
 
     public CreativeListener(CreativeItemControl plugin) {
         this.plugin = plugin;
         this.attributeHandler = new AttributeHandler(plugin);
         this.potionHandler = new PotionHandler(plugin);
         this.enchantmentHandler = new EnchantmentHandler(plugin);
+        this.componentHandler = new ComponentHandler(plugin);
     }
 
     @EventHandler
@@ -36,7 +39,6 @@ public class CreativeListener implements Listener {
         if (plugin.worldsBlacklist == inList) return;
 
         if (e.getWhoClicked().hasPermission("cic.bypass")) return;
-
 
 
         // Setup Item Information
@@ -60,13 +62,14 @@ public class CreativeListener implements Listener {
         attributeHandler.check(ctx);
         potionHandler.check(ctx);
         enchantmentHandler.check(ctx);
+        componentHandler.check(ctx);
 
         boolean wasModified = !ctx.meta.equals(originalMeta);
 
         if (ctx.isCancelled()) {
             e.setCancelled(true);
-        } else if (isDrop) {
-            if (wasModified) e.setCancelled(true);
+        } else if (isDrop && wasModified) {
+            e.setCancelled(true);
         } else {
             item.setItemMeta(ctx.newItemMeta());
             p.getInventory().setItem(e.getSlot(), item);

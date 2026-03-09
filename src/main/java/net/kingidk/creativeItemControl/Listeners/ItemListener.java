@@ -75,59 +75,12 @@ public class ItemListener implements Listener {
             e.setCancelled(true);
         } else {
             item.setItemMeta(ctx.newItemMeta());
-            p.getInventory().setItem(e.getSlot(), item);
+            if (e.getSlot() < p.getInventory().getSize()) {
+                p.getInventory().setItem(e.getSlot(), item);
+            }
             p.updateInventory();
         }
 
-    }
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-        if (!plugin.masterEnabled) return;
-        if (e instanceof InventoryCreativeEvent) return;
-        if (e.getSlot() < 0) return;
-        if (!e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) return;
-        boolean inList = plugin.worlds.contains(e.getWhoClicked().getWorld().getName());
-        if (plugin.worldsBlacklist == inList) return;
-
-        if (e.getWhoClicked().hasPermission("cic.bypass")) return;
-
-
-
-
-
-
-
-        ItemStack item = switch (e.getAction()) {
-            case PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, MOVE_TO_OTHER_INVENTORY,
-                 HOTBAR_SWAP -> e.getCurrentItem();
-            default -> null;
-        };
-
-        if (item == null || item.getType().isAir()) return;
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return;
-
-        Player p = (Player) e.getWhoClicked();
-
-
-
-
-
-        if (meta.equals(plugin.getDefaultMeta(item.getType()))) return;
-
-        ItemCheckContext ctx = new ItemCheckContext(p, item, meta, e.getSlot());
-
-        attributeHandler.check(ctx);
-        potionHandler.check(ctx);
-        enchantmentHandler.check(ctx);
-        componentHandler.check(ctx);
-
-
-        if (ctx.isCancelled()) {
-            e.setCancelled(true);
-        } else {
-            e.getCurrentItem().setItemMeta(ctx.newItemMeta());
-        }
     }
 
     @EventHandler

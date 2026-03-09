@@ -2,9 +2,7 @@ package net.kingidk.creativeItemControl;
 
 import net.kingidk.creativeItemControl.Enums.AttributeAction;
 import net.kingidk.creativeItemControl.Enums.EnchantAction;
-import net.kingidk.creativeItemControl.Listeners.CreativeListener;
-import net.kingidk.creativeItemControl.Listeners.InventoryClickListener;
-import net.kingidk.creativeItemControl.Listeners.InventorySlotListener;
+import net.kingidk.creativeItemControl.Listeners.ItemListener;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -62,9 +60,7 @@ public final class CreativeItemControl extends JavaPlugin {
         saveDefaultConfig();
         loadConfigCache();
 
-        getServer().getPluginManager().registerEvents(new CreativeListener(this), this);
-        getServer().getPluginManager().registerEvents(new InventorySlotListener(this), this);
-        getServer().getPluginManager().registerEvents(new InventoryClickListener(this), this);
+        getServer().getPluginManager().registerEvents(new ItemListener(this), this);
         Objects.requireNonNull(getCommand("cic")).setExecutor(new Command(this));
     }
 

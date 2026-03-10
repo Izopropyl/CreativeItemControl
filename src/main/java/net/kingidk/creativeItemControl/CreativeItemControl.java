@@ -1,9 +1,12 @@
 package net.kingidk.creativeItemControl;
 
+import io.papermc.paper.datacomponent.DataComponentType;
 import net.kingidk.creativeItemControl.Enums.AttributeAction;
 import net.kingidk.creativeItemControl.Enums.EnchantAction;
 import net.kingidk.creativeItemControl.Listeners.ItemListener;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +29,7 @@ public final class CreativeItemControl extends JavaPlugin {
     private final Map<Material, ItemMeta> defaultMetaCache = new EnumMap<>(Material.class);
     private final Map<Material, ItemStack> defaultItemCache = new EnumMap<>(Material.class);
     public List<String> components;
+    public List<DataComponentType> resolvedComponents;
 
 
     public ItemMeta getDefaultMeta(Material type) {
@@ -50,6 +54,17 @@ public final class CreativeItemControl extends JavaPlugin {
         worldsBlacklist = getConfig().getBoolean("config.blacklist");
         playerAlerts = getConfig().getBoolean("config.playeralerts");
         components = getConfig().getStringList("components.blocked");
+
+
+        // Get component types from list in config
+        resolvedComponents = new ArrayList<>();
+        for (String name : components) {
+            NamespacedKey key = NamespacedKey.fromString(name);
+            if (key==null) continue;
+            DataComponentType type = Registry.DATA_COMPONENT_TYPE.get(key);
+            if (type == null) continue;
+            resolvedComponents.add(type);
+        }
 
     }
 

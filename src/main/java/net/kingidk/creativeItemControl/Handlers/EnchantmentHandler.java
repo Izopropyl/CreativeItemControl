@@ -27,6 +27,7 @@ public class EnchantmentHandler implements ItemCheck{
         if (ctx.player.hasPermission("cic.bypass.enchantments")) return;
 
         Map<Enchantment, Integer> enchants = ctx.meta.getEnchants();
+        if (enchants.isEmpty()) return;
         Set<Enchantment> seen = new HashSet<>();
 
         boolean found = false;

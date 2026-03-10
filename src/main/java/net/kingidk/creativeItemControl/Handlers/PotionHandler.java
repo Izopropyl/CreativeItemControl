@@ -30,7 +30,9 @@ public class PotionHandler implements ItemCheck {
         PotionMeta potionMeta = (PotionMeta) ctx.meta;
 
         if (potionMeta.hasCustomEffects()) {
-            ctx.player.sendMessage(Component.text("Custom potions are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
+            if (plugin.playerAlerts) {
+                ctx.player.sendMessage(Component.text("Custom potions are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
+            }
             ctx.cancel();
         }
     }

@@ -6,8 +6,6 @@ import net.kingidk.creativeItemControl.ItemCheckContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
@@ -27,24 +25,14 @@ public class ComponentHandler implements ItemCheck {
 
 
         boolean found = false;
-        for (String name : plugin.components) {
-            NamespacedKey key = NamespacedKey.fromString(name);
-            if (key == null) continue;
-            DataComponentType type = Registry.DATA_COMPONENT_TYPE.get(key);
-            if (type == null) continue;
-
+        for (DataComponentType type : plugin.resolvedComponents) {
             ItemStack defaultItem = plugin.getDefaultItem(ctx.item.getType());
-
             if (ctx.item.hasData(type)) {
                 if (type instanceof DataComponentType.Valued<?> valued) {
-                    Object defaultData = defaultItem.getData(valued);
-                    Object itemData = ctx.item.getData(valued);
-                    if (Objects.equals(defaultData, itemData)) continue;
+                    if (Objects.equals(defaultItem.getData(valued), ctx.item.getData(valued))) continue;
                 } else {
                     if (defaultItem.hasData(type)) continue;
                 }
-
-
                 ctx.cancel();
                 found = true;
             }

@@ -16,7 +16,7 @@ public class Command implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, org.bukkit.command.@NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            commandSender.sendMessage(Component.text("ComponentControl config reloaded!", NamedTextColor.GREEN));
+            commandSender.sendMessage(Component.text("CreativeItemControl config reloaded!", NamedTextColor.GREEN));
             plugin.reloadConfig();
             plugin.loadConfigCache();
             return true;

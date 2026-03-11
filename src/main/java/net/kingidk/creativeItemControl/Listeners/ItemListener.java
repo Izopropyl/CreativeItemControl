@@ -33,10 +33,6 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void  onCreativeInventory(InventoryCreativeEvent e) {
-        if (!plugin.masterEnabled) return;
-
-
-
         boolean inList = plugin.worlds.contains(e.getWhoClicked().getWorld().getName());
         if (plugin.worldsBlacklist == inList) return;
 
@@ -74,7 +70,7 @@ public class ItemListener implements Listener {
             e.setCancelled(true);
         } else {
             item.setItemMeta(ctx.newItemMeta());
-            if (e.getSlot() < p.getInventory().getSize()) {
+            if (!isDrop && e.getSlot() < p.getInventory().getSize()) {
                 p.getInventory().setItem(e.getSlot(), item);
             }
             if (wasModified) p.updateInventory();

@@ -23,7 +23,7 @@ public final class CreativeItemControl extends JavaPlugin {
     public boolean enchantmentsAllowIncompatible;
     public AttributeAction attributesAction;
     public EnchantAction enchantmentsAction;
-    public List<String> worlds;
+    public Set<String> worlds;
     public boolean worldsBlacklist;
     public boolean playerAlerts;
     private final Map<Material, ItemMeta> defaultMetaCache = new EnumMap<>(Material.class);
@@ -50,7 +50,7 @@ public final class CreativeItemControl extends JavaPlugin {
         attributesAction = AttributeAction.valueOf(getConfig().getString("attributes.action", "REMOVE"));
         enchantmentsAction = EnchantAction.valueOf(getConfig().getString("enchantments.action", "REMOVE"));
         enchantmentsAllowIncompatible = getConfig().getBoolean("enchantments.allow-incompatible");
-        worlds = getConfig().getStringList("config.worlds");
+        worlds = new HashSet<>(getConfig().getStringList("config.worlds"));
         worldsBlacklist = getConfig().getBoolean("config.blacklist");
         playerAlerts = getConfig().getBoolean("config.playeralerts");
         components = getConfig().getStringList("components.blocked");

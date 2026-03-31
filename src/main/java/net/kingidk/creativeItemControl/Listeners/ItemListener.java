@@ -55,6 +55,8 @@ public class ItemListener implements Listener {
 
         if (meta.equals(plugin.getDefaultMeta(item.getType()))) return;
 
+        if (plugin.isExcluded(item)) return;
+
         ItemCheckContext ctx = new ItemCheckContext(p, item, meta, e.getSlot());
 
         attributeHandler.check(ctx);
@@ -100,6 +102,8 @@ public class ItemListener implements Listener {
 
 
         if (meta.equals(plugin.getDefaultMeta(item.getType()))) return;
+
+        if (plugin.isExcluded(item)) return;
 
         ItemCheckContext ctx = new ItemCheckContext(p, item, meta, e.getSlot());
 

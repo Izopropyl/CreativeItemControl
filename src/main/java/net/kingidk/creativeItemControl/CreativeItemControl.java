@@ -30,7 +30,13 @@ public final class CreativeItemControl extends JavaPlugin {
     private final Map<Material, ItemStack> defaultItemCache = new EnumMap<>(Material.class);
     public List<String> components;
     public List<DataComponentType> resolvedComponents;
+    private Map<String, ItemStack> excludedItems;
+    private ExcludedItemStore excludedItemStore;
 
+    private final Map<String, Long> giveCooldowns = new HashMap<>();
+    public long giveCooldownSeconds;
+
+    private ItemListener listener;
 
     public ItemMeta getDefaultMeta(Material type) {
         return defaultMetaCache.computeIfAbsent(type, t -> new ItemStack(t, 1).getItemMeta());
@@ -54,6 +60,7 @@ public final class CreativeItemControl extends JavaPlugin {
         worldsBlacklist = getConfig().getBoolean("config.blacklist");
         playerAlerts = getConfig().getBoolean("config.playeralerts");
         components = getConfig().getStringList("components.blocked");
+        giveCooldownSeconds = getConfig().getLong("creativeitemcontrol.config.give-cooldown", 0);
 
 
         // Get component types from list in config
@@ -75,14 +82,64 @@ public final class CreativeItemControl extends JavaPlugin {
         saveDefaultConfig();
         loadConfigCache();
 
-        getServer().getPluginManager().registerEvents(new ItemListener(this), this);
-        Objects.requireNonNull(getCommand("cic")).setExecutor(new Command(this));
+        listener = new ItemListener(this);
+        getServer().getPluginManager().registerEvents(listener, this);
+
+        var cicCmd = Objects.requireNonNull(getCommand("cic"));
+        Command cicExecutor = new Command(this);
+        cicCmd.setExecutor(cicExecutor);
+        cicCmd.setTabCompleter(cicExecutor);
+
+
+        excludedItemStore = new ExcludedItemStore(this);
+        excludedItems = excludedItemStore.loadAll();
+
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
+
+    public void storeExcludedItem(String id, ItemStack item) {
+        excludedItems.put(id, item.clone());
+        excludedItemStore.save(id, item);
+    }
+
+
+    public void removeExcludedItem(String id) {
+        excludedItems.remove(id);
+        excludedItemStore.remove(id);
+    }
+
+    public ItemStack getExcludedItem(String id) {
+        return excludedItems.get(id);
+    }
+
+    public Map<String, ItemStack> getExcludedItems() {
+        return Collections.unmodifiableMap(excludedItems);
+    }
+
+    public boolean isExcluded(ItemStack item) {
+        return excludedItems.values().stream().anyMatch(e -> e.isSimilar(item));
+    }
+
+    public boolean isOnGiveCooldown(UUID targetId, String itemId) {
+        String key = targetId + ":" + itemId;
+        Long last = giveCooldowns.get(key);
+        if (last == null) return false;
+        return (System.currentTimeMillis() - last) < giveCooldownSeconds * 1000L;
+    }
+    public long getGiveCooldownRemaining(UUID targetId, String itemId) {
+        String key = targetId + ":" + itemId;
+        Long last = giveCooldowns.get(key);
+        return giveCooldownSeconds - (System.currentTimeMillis() - last) / 1000L;
+    }
+    public void recordGive(UUID targetId, String itemId) {
+        giveCooldowns.put(targetId + ":" + itemId, System.currentTimeMillis());
+    }
+
+
 
 
 }

@@ -5,9 +5,8 @@ api-version: '1.21'
 authors: [ Kingidk ]
 commands:
   cic:
-    description: Reload CreativeItemControl config
-    usage: /cic reload
-    permission: cic.reload
+    description: Main CreativeItemControl command
+    usage: /cic <reload|list|store|give>
     permission-message: You do not have permission
 permissions:
   cic.bypass.*:
@@ -25,6 +24,9 @@ permissions:
   cic.bypass.components:
     description: Bypass component checks
     default: op
-  cic.reload:
-    description: Reload command
+  cic.admin:
+    description: Admin Commands
+    default: op
+  cic.give:
+    description: Allow giving items to self
     default: op

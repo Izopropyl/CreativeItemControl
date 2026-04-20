@@ -34,12 +34,34 @@ potions:
   enabled: true
 
 
-components:
-  # Warning, directly blocking components can have unintended consequences, including MANY false positives.
-  # Use only if you know what you're doing
+components: # Deny specific components. List of components can be found here https://minecraft.wiki/w/Data_component_format
   enabled: false
-  blocked: # Blocked components
+  blocked: # List of components to block
     - minecraft:example_component
+
+# ----------------------------- Messages -------------------------------------
+messages:
+  alerts:
+    components: "<b><red>Items with custom components are not allowed here!"
+    attributes: "<b><red>Items with attribute modifiers are not allowed here!"
+    enchantments: "<b><red>Items with impossible enchantments are not allowed here!"
+    potions: "<b><red>Custom potions are not allowed here!"
+
+  commands:
+    reload: "&aCreativeItemControl config reloaded!"
+    exclude: "&aStored {type} as \"{id}\"."
+    remove: "&aRemoved excluded item \"{id}\"."
+    listempty: "&eNo excluded items stored."
+    # Give Command
+    give: "&aGave \"{id}\" to &f&a{player}."
+    giveinvalid: "&cNo excluded item found with id \"{id} \"."
+    giveothers: "&cYou do not have permission to give to other players!"
+    playernotfound: "&cPlayer \"{player}\" not found."
+    specifyplayer: "&cSpecify a player: /cic give <id> <player>"
+    invalidworld: "&cYou cannot use this in this world!"
+    oncooldown: "&cYou must wait {time}s before receiving this item again."
+
+    noperm: "&cYou do not have permission!"
 
 
 

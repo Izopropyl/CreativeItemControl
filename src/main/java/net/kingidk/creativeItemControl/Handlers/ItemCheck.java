@@ -1,6 +1,6 @@
 package net.kingidk.creativeItemControl.Handlers;
 
-import net.kingidk.creativeItemControl.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.ItemCheckContext;
 
 
 public interface ItemCheck {

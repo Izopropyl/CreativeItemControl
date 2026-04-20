@@ -2,17 +2,17 @@ package net.kingidk.creativeItemControl.Handlers;
 
 import net.kingidk.creativeItemControl.CreativeItemControl;
 import net.kingidk.creativeItemControl.Enums.AttributeAction;
-import net.kingidk.creativeItemControl.ItemCheckContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kingidk.creativeItemControl.Util.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.MessageUtil;
 
 
 public class AttributeHandler implements ItemCheck{
     private final CreativeItemControl plugin;
+    private final MessageUtil messageUtil;
 
-    public AttributeHandler(CreativeItemControl plugin) {
+    public AttributeHandler(CreativeItemControl plugin, MessageUtil messageUtil) {
         this.plugin = plugin;
+        this.messageUtil = messageUtil;
     }
 
 
@@ -31,7 +31,7 @@ public class AttributeHandler implements ItemCheck{
             }
 
             if (plugin.playerAlerts) {
-                ctx.player.sendMessage(Component.text("Items with attribute modifiers are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
+                messageUtil.sendAlert(ctx.player, "alerts.attributes");
             }
 
         }

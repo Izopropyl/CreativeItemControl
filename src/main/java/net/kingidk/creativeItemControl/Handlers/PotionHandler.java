@@ -1,17 +1,17 @@
 package net.kingidk.creativeItemControl.Handlers;
 
 import net.kingidk.creativeItemControl.CreativeItemControl;
-import net.kingidk.creativeItemControl.ItemCheckContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kingidk.creativeItemControl.Util.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.MessageUtil;
 import org.bukkit.inventory.meta.PotionMeta;
 
 public class PotionHandler implements ItemCheck {
     private final CreativeItemControl plugin;
+    private final MessageUtil messageUtil;
 
-    public PotionHandler(CreativeItemControl plugin) {
+    public PotionHandler(CreativeItemControl plugin, MessageUtil messageUtil) {
         this.plugin = plugin;
+        this.messageUtil = messageUtil;
     }
 
 
@@ -31,7 +31,7 @@ public class PotionHandler implements ItemCheck {
 
         if (potionMeta.hasCustomEffects()) {
             if (plugin.playerAlerts) {
-                ctx.player.sendMessage(Component.text("Custom potions are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
+                messageUtil.sendAlert(ctx.player, "alerts.potions");
             }
             ctx.cancel();
         }

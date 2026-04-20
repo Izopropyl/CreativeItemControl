@@ -4,6 +4,9 @@ import io.papermc.paper.datacomponent.DataComponentType;
 import net.kingidk.creativeItemControl.Enums.AttributeAction;
 import net.kingidk.creativeItemControl.Enums.EnchantAction;
 import net.kingidk.creativeItemControl.Listeners.ItemListener;
+import net.kingidk.creativeItemControl.Util.Command;
+import net.kingidk.creativeItemControl.Util.ExcludedItemStore;
+import net.kingidk.creativeItemControl.Util.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -81,12 +84,13 @@ public final class CreativeItemControl extends JavaPlugin {
 
         saveDefaultConfig();
         loadConfigCache();
+        MessageUtil messageUtil = new MessageUtil(this);
 
-        listener = new ItemListener(this);
+        listener = new ItemListener(this, messageUtil);
         getServer().getPluginManager().registerEvents(listener, this);
 
         var cicCmd = Objects.requireNonNull(getCommand("cic"));
-        Command cicExecutor = new Command(this);
+        Command cicExecutor = new Command(this, messageUtil);
         cicCmd.setExecutor(cicExecutor);
         cicCmd.setTabCompleter(cicExecutor);
 

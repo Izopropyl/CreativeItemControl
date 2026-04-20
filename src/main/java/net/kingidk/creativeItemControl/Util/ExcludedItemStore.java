@@ -1,4 +1,4 @@
-package net.kingidk.creativeItemControl;
+package net.kingidk.creativeItemControl.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;

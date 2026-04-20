@@ -2,10 +2,8 @@ package net.kingidk.creativeItemControl.Handlers;
 
 import net.kingidk.creativeItemControl.CreativeItemControl;
 
-import net.kingidk.creativeItemControl.ItemCheckContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kingidk.creativeItemControl.Util.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.MessageUtil;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.HashSet;
@@ -15,9 +13,11 @@ import java.util.Set;
 public class EnchantmentHandler implements ItemCheck{
 
     private final CreativeItemControl plugin;
+    private final MessageUtil messageUtil;
 
-    public EnchantmentHandler(CreativeItemControl plugin) {
+    public EnchantmentHandler(CreativeItemControl plugin, MessageUtil messageUtil) {
         this.plugin = plugin;
+        this.messageUtil = messageUtil;
     }
 
     @Override
@@ -47,7 +47,8 @@ public class EnchantmentHandler implements ItemCheck{
             seen.add(enchantment);
         }
         if (found && plugin.playerAlerts) {
-            ctx.player.sendMessage(Component.text("Items with impossible enchantments are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
+                messageUtil.sendAlert(ctx.player, "alerts.enchantments");
+
         }
 
 

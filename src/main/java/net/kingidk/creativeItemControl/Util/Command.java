@@ -1,5 +1,6 @@
-package net.kingidk.creativeItemControl;
+package net.kingidk.creativeItemControl.Util;
 
+import net.kingidk.creativeItemControl.CreativeItemControl;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -16,9 +17,11 @@ import java.util.Map;
 
 public class Command implements CommandExecutor, TabCompleter {
     private final CreativeItemControl plugin;
+    private final MessageUtil messageUtil;
 
-    public Command(CreativeItemControl plugin) {
+    public Command(CreativeItemControl plugin, MessageUtil messageUtil) {
         this.plugin = plugin;
+        this.messageUtil = messageUtil;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class Command implements CommandExecutor, TabCompleter {
         // No perms at all
         boolean isAdmin = sender.hasPermission("cic.admin");
         if (!isAdmin && !sender.hasPermission("cic.give")) {
-            sender.sendMessage(Component.text("You do not have permission", NamedTextColor.RED));
+            messageUtil.sendSender(sender, "commands.noperm");
             return true;
         }
 
@@ -35,42 +38,42 @@ public class Command implements CommandExecutor, TabCompleter {
             ItemStack item = plugin.getExcludedItem(args[1]);
 
             if (item == null) {
-                sender.sendMessage(Component.text("No excluded item found with id \"" + args[1] + "\".", NamedTextColor.RED));
+                messageUtil.sendSender(sender, "commands.giveinvalid", "{id}", args[1]);
                 return true;
             }
             Player target;
             if (args.length == 3) {
                 if (!isAdmin) {
-                    sender.sendMessage(Component.text("You do not have permission to give to other players!", NamedTextColor.RED));
+                    messageUtil.sendSender(sender, "command.giveothers");
                     return true;
                 }
                 target = Bukkit.getPlayerExact(args[2]);
                 if (target == null) {
-                    sender.sendMessage(Component.text("Player \"" + args[2] + "\" not found.", NamedTextColor.RED));
+                    messageUtil.sendSender(sender, "commands.playernotfound", "{player}", args[2]);
                     return true;
                 }
             } else if (sender instanceof Player p) {
                 target = p;
             } else {
-                sender.sendMessage(Component.text("Specify a player: /cic give <id> <player>", NamedTextColor.RED));
+                messageUtil.sendSender(sender, "command.specifyplayer");
                 return true;
             }
             boolean inList = plugin.worlds.contains(target.getWorld().getName());
 
             if (!isAdmin && plugin.worldsBlacklist == inList) {
-                sender.sendMessage(Component.text("You cannot use this in this world!", NamedTextColor.RED));
+                messageUtil.sendSender(sender, "command.invalidworld");
                 return true;
             }
             if (!isAdmin && plugin.giveCooldownSeconds > 0 && plugin.isOnGiveCooldown(target.getUniqueId(), args[1])) {
                 long remaining = plugin.getGiveCooldownRemaining(target.getUniqueId(), args[1]);
-                sender.sendMessage(Component.text("You must wait " + remaining + "s before receiving this item again.", NamedTextColor.RED));
+                messageUtil.sendSender(sender, "commands.cooldown", "{time}", String.valueOf(remaining));
                 return true;
             }
 
 
             target.getInventory().addItem(item.clone());
             plugin.recordGive(target.getUniqueId(), args[1]);
-            sender.sendMessage(Component.text("Gave \"" + args[1] + "\" to " + target.getName() + ".", NamedTextColor.GREEN));
+            messageUtil.sendSender(sender, "commands.give", "{id}", args[1], "{player}", target.getName());
             return true;
         }
 
@@ -81,7 +84,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            sender.sendMessage(Component.text("You do not have permission!", NamedTextColor.RED));
+            messageUtil.sendSender(sender, "commands.noperm");
             return true;
         }
 
@@ -89,15 +92,14 @@ public class Command implements CommandExecutor, TabCompleter {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             plugin.reloadConfig();
             plugin.loadConfigCache();
-            sender.sendMessage(Component.text("CreativeItemControl config reloaded!", NamedTextColor.GREEN));
+            messageUtil.sendSender(sender, "commands.reload");
             return true;
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             Map<String, ItemStack> items = plugin.getExcludedItems();
             if (items.isEmpty()) {
-                sender.sendMessage(Component.text("No excluded items stored.", NamedTextColor.YELLOW));
-
+                messageUtil.sendSender(sender, "commands.listempty");
             } else {
                 sender.sendMessage(Component.text("Excluded items:", NamedTextColor.GOLD));
                 items.forEach((id, item) ->
@@ -116,11 +118,11 @@ public class Command implements CommandExecutor, TabCompleter {
             }
             ItemStack held = p.getInventory().getItemInMainHand();
             if (held.getType().isAir()) {
-                sender.sendMessage(Component.text("You must be holding an item!", NamedTextColor.RED));
+                sender.sendMessage (Component.text("You must be holding an item!", NamedTextColor.RED));
                 return true;
             }
             plugin.storeExcludedItem(args[1], held);
-            sender.sendMessage(Component.text("Stored " + held.getType() + " as \"" + args[1] + "\".", NamedTextColor.GREEN));
+            messageUtil.sendSender(sender, "commands.exclude", "{type}", String.valueOf(held.getType()), "{id}", args[1]);
             return true;
         }
 
@@ -128,10 +130,11 @@ public class Command implements CommandExecutor, TabCompleter {
         if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             if (plugin.getExcludedItem(args[1]) == null) {
                 sender.sendMessage(Component.text("No excluded item found with id \"" + args[1] + "\".", NamedTextColor.RED));
+                messageUtil.sendSender(sender, "commands.giveinvalid", "{id}", args[1]);
                 return true;
             }
             plugin.removeExcludedItem(args[1]);
-            sender.sendMessage(Component.text("Removed excluded item \"" + args[1] + "\".", NamedTextColor.GREEN));
+            messageUtil.sendSender(sender, "commands.remove", "{id}", args[1]);
             return true;
         }
 

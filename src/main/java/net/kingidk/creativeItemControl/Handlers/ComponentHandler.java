@@ -2,18 +2,18 @@ package net.kingidk.creativeItemControl.Handlers;
 
 import io.papermc.paper.datacomponent.DataComponentType;
 import net.kingidk.creativeItemControl.CreativeItemControl;
-import net.kingidk.creativeItemControl.ItemCheckContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kingidk.creativeItemControl.Util.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.MessageUtil;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
 public class ComponentHandler implements ItemCheck {
     private final CreativeItemControl plugin;
-    public ComponentHandler(CreativeItemControl plugin) {
+    private final MessageUtil messageUtil;
+    public ComponentHandler(CreativeItemControl plugin, MessageUtil messageUtil) {
         this.plugin = plugin;
+        this.messageUtil = messageUtil;
     }
 
 
@@ -39,8 +39,8 @@ public class ComponentHandler implements ItemCheck {
 
         }
 
-        if (found && plugin.playerAlerts) {
-            ctx.player.sendMessage(Component.text("Items with custom components are not allowed here!", NamedTextColor.RED, TextDecoration.BOLD));
+        if (plugin.playerAlerts) {
+            messageUtil.sendAlert(ctx.player, "alerts.components");
         }
 
 

@@ -6,7 +6,8 @@ import net.kingidk.creativeItemControl.Handlers.AttributeHandler;
 import net.kingidk.creativeItemControl.Handlers.ComponentHandler;
 import net.kingidk.creativeItemControl.Handlers.EnchantmentHandler;
 import net.kingidk.creativeItemControl.Handlers.PotionHandler;
-import net.kingidk.creativeItemControl.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.ItemCheckContext;
+import net.kingidk.creativeItemControl.Util.MessageUtil;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,12 +24,12 @@ public class ItemListener implements Listener {
     private final EnchantmentHandler enchantmentHandler;
     private final ComponentHandler componentHandler;
 
-    public ItemListener(CreativeItemControl plugin) {
+    public ItemListener(CreativeItemControl plugin, MessageUtil messageUtil) {
         this.plugin = plugin;
-        this.attributeHandler = new AttributeHandler(plugin);
-        this.potionHandler = new PotionHandler(plugin);
-        this.enchantmentHandler = new EnchantmentHandler(plugin);
-        this.componentHandler = new ComponentHandler(plugin);
+        this.attributeHandler = new AttributeHandler(plugin, messageUtil);
+        this.potionHandler = new PotionHandler(plugin, messageUtil);
+        this.enchantmentHandler = new EnchantmentHandler(plugin, messageUtil);
+        this.componentHandler = new ComponentHandler(plugin, messageUtil);
     }
 
     @EventHandler

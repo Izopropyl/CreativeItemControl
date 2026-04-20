@@ -1,23 +1,40 @@
-Plugin to prevent players from getting impossible items while in creative mode.
+CreativeItemControl is a plugin designed to allow you to prevent playters from obtaining or using impossible items, such as..
 
-Currently, only blocks impossible enchantments and attribute modifiers (either or both can be disabled easily in config)
+Impossible enchantments:
+- Incompatible (Infinity + mending)
+- Impossible levels (Sharpness 10)
+- Incompatible items (Sharpness on a stick)
 
-
-Enchantments:
-Checks for enchants incompatible with the item, incompatible with each other, and impossible levels.
-Available actions:
-   - DELETE the item entirely
-   - REMOVE the problematic enchantment
-   - LOWER the enchantment level or remove the enchantment if incompatible
+Custom potions: 
+- Potions with custom effects
 
 Attribute Modifiers:
-Checks for any attribute modifiers on the item.
-Available actions:
-  - DELETE The item entirely
-  - REMOVE the attribute modifiers
+- Prevent any items with attributre modifiers
+
+You can also allow specific items with the /cic exclude commmand.
+
+Commands:
+
+/cic exclude <id> | Exclude held item from CIC. Id is any name you wish to give it
+/cic give <id> [player] | Give yourself or another player (if you have permissions) an excluded item
+/cic list | List available excluded items
+/cic reload | Reload the plugin config
+/cic remove <id> | Remove an excluded item from exclusions list
+
+Permissions:
+
+cic.bypass.enchantments - Bypass enchantment protections
+cic.bypass.potions - Bypass potion protections
+cic.bypass.attributes - Bypass attrribute protections
+cic.bypass.components - Bypass component protections
+cic.bypass.* - Bypass all protections
+
+cic.give - Allow a player to use /cic give on themself
+cic.admin - Admin commands (/cic exclude, reload, remove), allow /cic give on others
+
+Multiple action options for dealing with the items, configurable in the config.
 
 
 Plans:
 
-- Prevent component changes
 - Allow whitelisting of attribute modifiers, enchantments, or components in config

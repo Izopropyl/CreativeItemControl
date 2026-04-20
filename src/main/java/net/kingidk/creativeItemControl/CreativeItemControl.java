@@ -150,7 +150,6 @@ public final class CreativeItemControl extends JavaPlugin {
     }
 
     public void updateConfig() {
-        getConfig().set("version", 2);
         getConfig().set("config.alert-cooldown", 1000);
         getConfig().set("config.give-cooldown", 0);
         getConfig().set("messages.alerts.components", "<b><red>Items with custom components are not allowed here!");
@@ -169,6 +168,7 @@ public final class CreativeItemControl extends JavaPlugin {
         getConfig().set("messages.commands.invalidworld", "&cYou cannot use this in this world!");
         getConfig().set("messages.commands.oncooldown", "&cYou must wait {time}s before receiving this item again.");
         getConfig().set("messages.commands.noperm", "&cYou do not have permission!");
+        getConfig().set("version", 2);
 
         saveConfig();
         getLogger().info("Config migrated to version 2");

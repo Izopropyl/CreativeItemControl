@@ -3,6 +3,7 @@ version: '1.1'
 main: net.kingidk.creativeItemControl.CreativeItemControl
 api-version: '1.21'
 authors: [ Kingidk ]
+folia-supported: true
 commands:
   cic:
     description: Main CreativeItemControl command

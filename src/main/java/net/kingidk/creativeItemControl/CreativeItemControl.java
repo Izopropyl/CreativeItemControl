@@ -41,8 +41,6 @@ public final class CreativeItemControl extends JavaPlugin {
     private final Map<String, Long> giveCooldowns = new HashMap<>();
     public long giveCooldownSeconds;
 
-    private ItemListener listener;
-
     public ItemMeta getDefaultMeta(Material type) {
         return defaultMetaCache.computeIfAbsent(type, t -> new ItemStack(t, 1).getItemMeta());
     }
@@ -86,10 +84,15 @@ public final class CreativeItemControl extends JavaPlugin {
         // Plugin startup logic
 
         saveDefaultConfig();
+        if (!getConfig().isSet("version")) {
+            getLogger().warning("Old Config Detected, new keys will be added");
+            updateConfig();
+        }
+
         loadConfigCache();
         MessageUtil messageUtil = new MessageUtil(this);
 
-        listener = new ItemListener(this, messageUtil);
+        ItemListener listener = new ItemListener(this, messageUtil);
         getServer().getPluginManager().registerEvents(listener, this);
 
         var cicCmd = Objects.requireNonNull(getCommand("cic"));
@@ -146,7 +149,30 @@ public final class CreativeItemControl extends JavaPlugin {
         giveCooldowns.put(targetId + ":" + itemId, System.currentTimeMillis());
     }
 
+    public void updateConfig() {
+        getConfig().set("version", 2);
+        getConfig().set("config.alert-cooldown", 1000);
+        getConfig().set("config.give-cooldown", 0);
+        getConfig().set("messages.alerts.components", "<b><red>Items with custom components are not allowed here!");
+        getConfig().set("messages.alerts.attributes", "<b><red>Items with attribute modifiers are not allowed here!");
+        getConfig().set("messages.alerts.enchantments", "<b><red>Items with impossible enchantments are not allowed here!");
+        getConfig().set("messages.alerts.potions", "<b><red>Custom potions are not allowed here!");
+        getConfig().set("messages.commands.reload", "&aCreativeItemControl config reloaded!");
+        getConfig().set("messages.commands.exclude", "&aStored {type} as \"{id}\".");
+        getConfig().set("messages.commands.remove", "&aRemoved excluded item \"{id}\".");
+        getConfig().set("messages.commands.listempty", "&eNo excluded items stored.");
+        getConfig().set("messages.commands.give", "&aGave \"{id}\" to &f&a{player}.");
+        getConfig().set("messages.commands.giveinvalid", "&cNo excluded item found with id \"{id} \".");
+        getConfig().set("messages.commands.giveothers", "&cYou do not have permission to give to other players!");
+        getConfig().set("messages.commands.playernotfound", "&cPlayer \"{player}\" not found.");
+        getConfig().set("messages.commands.specifyplayer", "&cSpecify a player: /cic give <id> <player>");
+        getConfig().set("messages.commands.invalidworld", "&cYou cannot use this in this world!");
+        getConfig().set("messages.commands.oncooldown", "&cYou must wait {time}s before receiving this item again.");
+        getConfig().set("messages.commands.noperm", "&cYou do not have permission!");
 
+        saveConfig();
+        getLogger().info("Config migrated to version 2");
+    }
 
 
 }

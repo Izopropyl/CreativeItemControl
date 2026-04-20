@@ -23,7 +23,7 @@ enchantments:
   # DELETE - Delete the item
   enabled: true # Enable enchantment checks?
   action: LOWER
-  allow-incompatible: false # Whether or not to allow incompatible enchantments (Sharpness with Smite, Infinity with Mending, etc)
+  allow-incompatible: false # Whether or not to allow incompatible enchantments (Sharpness with Smite, Infinity with Mending, etc.)
 
 attributes:
   # By default, no attribute modifying items will be allowed
@@ -45,30 +45,30 @@ components: # Deny specific components. List of components can be found here htt
 # ----------------------------- Messages -------------------------------------
 messages:
   alerts:
-    components: "<b><red>Items with custom components are not allowed here!"
-    attributes: "<b><red>Items with attribute modifiers are not allowed here!"
-    enchantments: "<b><red>Items with impossible enchantments are not allowed here!"
-    potions: "<b><red>Custom potions are not allowed here!"
+    components: '<b><red>Items with custom components are not allowed here!'
+    attributes: '<b><red>Items with attribute modifiers are not allowed here!'
+    enchantments: '<b><red>Items with impossible enchantments are not allowed here!'
+    potions: '<b><red>Custom potions are not allowed here!'
 
   commands:
-    reload: "&aCreativeItemControl config reloaded!"
-    exclude: "&aStored {type} as \"{id}\"."
-    remove: "&aRemoved excluded item \"{id}\"."
-    listempty: "&eNo excluded items stored."
+    reload: '&aCreativeItemControl config reloaded!'
+    exclude: '&aStored {type} as "{id}".'
+    remove: '&aRemoved excluded item "{id}".'
+    listempty: '&eNo excluded items stored.'
     # Give Command
-    give: "&aGave \"{id}\" to &f&a{player}."
-    giveinvalid: "&cNo excluded item found with id \"{id} \"."
-    giveothers: "&cYou do not have permission to give to other players!"
-    playernotfound: "&cPlayer \"{player}\" not found."
-    specifyplayer: "&cSpecify a player: /cic give <id> <player>"
-    invalidworld: "&cYou cannot use this in this world!"
-    oncooldown: "&cYou must wait {time}s before receiving this item again."
+    give: '&aGave "{id}" to &f&a{player}.'
+    giveinvalid: '&cNo excluded item found with id "{id}".'
+    giveothers: '&cYou do not have permission to give to other players!'
+    playernotfound: '&cPlayer "{player}" not found.'
+    specifyplayer: '&cSpecify a player: /cic give <id> <player>'
+    invalidworld: '&cYou cannot use this in this world!'
+    oncooldown: '&cYou must wait {time}s before receiving this item again.'
 
-    noperm: "&cYou do not have permission!"
-
-
+    noperm: '&cYou do not have permission!'
 
 
 
+# DO NOT TOUCH
+version: 2
 
 

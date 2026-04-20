@@ -29,12 +29,14 @@ public final class CreativeItemControl extends JavaPlugin {
     public Set<String> worlds;
     public boolean worldsBlacklist;
     public boolean playerAlerts;
+    public long alertCooldown;
     private final Map<Material, ItemMeta> defaultMetaCache = new EnumMap<>(Material.class);
     private final Map<Material, ItemStack> defaultItemCache = new EnumMap<>(Material.class);
     public List<String> components;
     public List<DataComponentType> resolvedComponents;
     private Map<String, ItemStack> excludedItems;
     private ExcludedItemStore excludedItemStore;
+
 
     private final Map<String, Long> giveCooldowns = new HashMap<>();
     public long giveCooldownSeconds;
@@ -62,8 +64,9 @@ public final class CreativeItemControl extends JavaPlugin {
         worlds = new HashSet<>(getConfig().getStringList("config.worlds"));
         worldsBlacklist = getConfig().getBoolean("config.blacklist");
         playerAlerts = getConfig().getBoolean("config.playeralerts");
+        alertCooldown = getConfig().getLong("config.alert-cooldown", 100);
         components = getConfig().getStringList("components.blocked");
-        giveCooldownSeconds = getConfig().getLong("creativeitemcontrol.config.give-cooldown", 0);
+        giveCooldownSeconds = getConfig().getLong("config.give-cooldown", 0);
 
 
         // Get component types from list in config

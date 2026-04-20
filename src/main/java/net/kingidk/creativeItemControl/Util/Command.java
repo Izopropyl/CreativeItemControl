@@ -29,7 +29,7 @@ public class Command implements CommandExecutor, TabCompleter {
         // No perms at all
         boolean isAdmin = sender.hasPermission("cic.admin");
         if (!isAdmin && !sender.hasPermission("cic.give")) {
-            messageUtil.sendSender(sender, "commands.noperm");
+            messageUtil.send(sender, "commands.noperm");
             return true;
         }
 
@@ -38,42 +38,42 @@ public class Command implements CommandExecutor, TabCompleter {
             ItemStack item = plugin.getExcludedItem(args[1]);
 
             if (item == null) {
-                messageUtil.sendSender(sender, "commands.giveinvalid", "{id}", args[1]);
+                messageUtil.send(sender, "commands.giveinvalid", "{id}", args[1]);
                 return true;
             }
             Player target;
             if (args.length == 3) {
                 if (!isAdmin) {
-                    messageUtil.sendSender(sender, "command.giveothers");
+                    messageUtil.send(sender, "command.giveothers");
                     return true;
                 }
                 target = Bukkit.getPlayerExact(args[2]);
                 if (target == null) {
-                    messageUtil.sendSender(sender, "commands.playernotfound", "{player}", args[2]);
+                    messageUtil.send(sender, "commands.playernotfound", "{player}", args[2]);
                     return true;
                 }
             } else if (sender instanceof Player p) {
                 target = p;
             } else {
-                messageUtil.sendSender(sender, "command.specifyplayer");
+                messageUtil.send(sender, "command.specifyplayer");
                 return true;
             }
             boolean inList = plugin.worlds.contains(target.getWorld().getName());
 
             if (!isAdmin && plugin.worldsBlacklist == inList) {
-                messageUtil.sendSender(sender, "command.invalidworld");
+                messageUtil.send(sender, "command.invalidworld");
                 return true;
             }
             if (!isAdmin && plugin.giveCooldownSeconds > 0 && plugin.isOnGiveCooldown(target.getUniqueId(), args[1])) {
                 long remaining = plugin.getGiveCooldownRemaining(target.getUniqueId(), args[1]);
-                messageUtil.sendSender(sender, "commands.cooldown", "{time}", String.valueOf(remaining));
+                messageUtil.send(sender, "commands.cooldown", "{time}", String.valueOf(remaining));
                 return true;
             }
 
 
             target.getInventory().addItem(item.clone());
             plugin.recordGive(target.getUniqueId(), args[1]);
-            messageUtil.sendSender(sender, "commands.give", "{id}", args[1], "{player}", target.getName());
+            messageUtil.send(sender, "commands.give", "{id}", args[1], "{player}", target.getName());
             return true;
         }
 
@@ -84,7 +84,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            messageUtil.sendSender(sender, "commands.noperm");
+            messageUtil.send(sender, "commands.noperm");
             return true;
         }
 
@@ -92,14 +92,14 @@ public class Command implements CommandExecutor, TabCompleter {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             plugin.reloadConfig();
             plugin.loadConfigCache();
-            messageUtil.sendSender(sender, "commands.reload");
+            messageUtil.send(sender, "commands.reload");
             return true;
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             Map<String, ItemStack> items = plugin.getExcludedItems();
             if (items.isEmpty()) {
-                messageUtil.sendSender(sender, "commands.listempty");
+                messageUtil.send(sender, "commands.listempty");
             } else {
                 sender.sendMessage(Component.text("Excluded items:", NamedTextColor.GOLD));
                 items.forEach((id, item) ->
@@ -122,7 +122,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 return true;
             }
             plugin.storeExcludedItem(args[1], held);
-            messageUtil.sendSender(sender, "commands.exclude", "{type}", String.valueOf(held.getType()), "{id}", args[1]);
+            messageUtil.send(sender, "commands.exclude", "{type}", String.valueOf(held.getType()), "{id}", args[1]);
             return true;
         }
 
@@ -130,11 +130,11 @@ public class Command implements CommandExecutor, TabCompleter {
         if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             if (plugin.getExcludedItem(args[1]) == null) {
                 sender.sendMessage(Component.text("No excluded item found with id \"" + args[1] + "\".", NamedTextColor.RED));
-                messageUtil.sendSender(sender, "commands.giveinvalid", "{id}", args[1]);
+                messageUtil.send(sender, "commands.giveinvalid", "{id}", args[1]);
                 return true;
             }
             plugin.removeExcludedItem(args[1]);
-            messageUtil.sendSender(sender, "commands.remove", "{id}", args[1]);
+            messageUtil.send(sender, "commands.remove", "{id}", args[1]);
             return true;
         }
 

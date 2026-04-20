@@ -5,10 +5,13 @@
 config:
   enabled: true # Is plugin enabled?
   playeralerts: true # Send a message to the player attempting to get the item
+  alert-cooldown: 1000 # Cooldown (in milliseconds) between each alert message
 
   worlds: # Worlds in which the plugin is active
     - example
   blacklist: false # If true, above worlds config will act as a blacklist
+
+  give-cooldown: 0 # Cooldown for /cic give command. cic.admin will bypass this
 
 
 

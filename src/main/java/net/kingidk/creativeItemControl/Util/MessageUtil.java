@@ -6,25 +6,32 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class MessageUtil {
     private final CreativeItemControl plugin;
+    private final Map<UUID, Long> alertCooldowns = new HashMap<>();
+
     public MessageUtil(CreativeItemControl plugin) {
         this.plugin = plugin;
     }
 
     public void sendAlert(Player player, String id) {
-       String message = plugin.getConfig().getString("messages." + id);
-        if (message == null) {
-            plugin.getLogger().warning("Message " + id + " has not been defined");
-            return;
-        }
-        Component component = MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(message));
-        player.sendMessage(component);
+       long now = System.currentTimeMillis();
+       UUID uuid = player.getUniqueId();
+
+       if (now - alertCooldowns.getOrDefault(uuid, 0L) < plugin.alertCooldown) {
+           return;
+       }
+
+       alertCooldowns.put(uuid, now);
+        send(player, id, "{player}", player.getName());
     }
 
-    public void sendSender(CommandSender sender, String id, String... replacements) {
+    public void send(CommandSender sender, String id, String... replacements) {
         String message = plugin.getConfig().getString("messages." + id);
         if (message == null) {
             plugin.getLogger().warning("Message " + id + " has not been defined");
@@ -50,6 +57,6 @@ public class MessageUtil {
                 .replace("&l", "<bold>").replace("&o", "<italic>")
                 .replace("&n", "<underlined>").replace("&m", "<strikethrough>")
                 .replace("&k", "<obfuscated>").replace("&r", "<reset>");
-    };
+    }
 
 }

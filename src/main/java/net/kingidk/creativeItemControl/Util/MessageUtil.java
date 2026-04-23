@@ -23,7 +23,7 @@ public class MessageUtil {
        long now = System.currentTimeMillis();
        UUID uuid = player.getUniqueId();
 
-       if (now - alertCooldowns.getOrDefault(uuid, 0L) < plugin.alertCooldown) {
+       if (now - alertCooldowns.getOrDefault(uuid, 0L) < plugin.config.alertCooldown) {
            return;
        }
 

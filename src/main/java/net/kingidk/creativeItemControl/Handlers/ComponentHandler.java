@@ -20,12 +20,11 @@ public class ComponentHandler implements ItemCheck {
     @Override
     public void check(ItemCheckContext ctx) {
         if (ctx.isCancelled()) return;
-        if (!plugin.componentsEnabled) return;
+        if (!plugin.config.componentsEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.components")) return;
 
 
-        boolean found = false;
-        for (DataComponentType type : plugin.resolvedComponents) {
+        for (DataComponentType type : plugin.config.resolvedComponents) {
             ItemStack defaultItem = plugin.getDefaultItem(ctx.item.getType());
             if (ctx.item.hasData(type)) {
                 if (type instanceof DataComponentType.Valued<?> valued) {
@@ -34,12 +33,11 @@ public class ComponentHandler implements ItemCheck {
                     if (defaultItem.hasData(type)) continue;
                 }
                 ctx.cancel();
-                found = true;
             }
 
         }
 
-        if (plugin.playerAlerts) {
+        if (ctx.isCancelled() && plugin.config.playerAlerts) {
             messageUtil.sendAlert(ctx.player, "alerts.components");
         }
 

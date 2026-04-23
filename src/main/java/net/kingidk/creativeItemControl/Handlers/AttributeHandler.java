@@ -19,18 +19,18 @@ public class AttributeHandler implements ItemCheck{
     @Override
     public void check(ItemCheckContext ctx) {
         if (ctx.isCancelled()) return;
-        if (!plugin.attributesEnabled) return;
+        if (!plugin.config.attributesEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.attributes")) return;
 
         boolean attributeIssue = ctx.meta.getAttributeModifiers() != null;
         if (attributeIssue) {
-            if (plugin.attributesAction.equals(AttributeAction.REMOVE)) {
+            if (plugin.config.attributesAction.equals(AttributeAction.REMOVE)) {
                 ctx.meta.setAttributeModifiers(null);
             } else {
                 ctx.cancel();
             }
 
-            if (plugin.playerAlerts) {
+            if (plugin.config.playerAlerts) {
                 messageUtil.sendAlert(ctx.player, "alerts.attributes");
             }
 

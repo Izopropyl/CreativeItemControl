@@ -1,15 +1,11 @@
 package net.kingidk.creativeItemControl;
 
-import io.papermc.paper.datacomponent.DataComponentType;
-import net.kingidk.creativeItemControl.Enums.AttributeAction;
-import net.kingidk.creativeItemControl.Enums.EnchantAction;
 import net.kingidk.creativeItemControl.Listeners.ItemListener;
 import net.kingidk.creativeItemControl.Util.Command;
+import net.kingidk.creativeItemControl.Util.ConfigUtil;
 import net.kingidk.creativeItemControl.Util.ExcludedItemStore;
 import net.kingidk.creativeItemControl.Util.MessageUtil;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,28 +14,14 @@ import java.util.*;
 
 public final class CreativeItemControl extends JavaPlugin {
 
-    public boolean masterEnabled;
-    public boolean attributesEnabled;
-    public boolean enchantmentsEnabled;
-    public boolean potionsEnabled;
-    public boolean componentsEnabled;
-    public boolean enchantmentsAllowIncompatible;
-    public AttributeAction attributesAction;
-    public EnchantAction enchantmentsAction;
-    public Set<String> worlds;
-    public boolean worldsBlacklist;
-    public boolean playerAlerts;
-    public long alertCooldown;
+    public ConfigUtil config;
     private final Map<Material, ItemMeta> defaultMetaCache = new EnumMap<>(Material.class);
     private final Map<Material, ItemStack> defaultItemCache = new EnumMap<>(Material.class);
-    public List<String> components;
-    public List<DataComponentType> resolvedComponents;
     private Map<String, ItemStack> excludedItems;
     private ExcludedItemStore excludedItemStore;
 
 
     private final Map<String, Long> giveCooldowns = new HashMap<>();
-    public long giveCooldownSeconds;
 
     public ItemMeta getDefaultMeta(Material type) {
         return defaultMetaCache.computeIfAbsent(type, t -> new ItemStack(t, 1).getItemMeta());
@@ -49,39 +31,10 @@ public final class CreativeItemControl extends JavaPlugin {
         return defaultItemCache.computeIfAbsent(type, t -> new ItemStack(t, 1));
     }
 
-
-    public void loadConfigCache() {
-        masterEnabled = getConfig().getBoolean("config.enabled");
-        attributesEnabled = getConfig().getBoolean("attributes.enabled");
-        enchantmentsEnabled = getConfig().getBoolean("enchantments.enabled");
-        potionsEnabled = getConfig().getBoolean("potions.enabled");
-        componentsEnabled = getConfig().getBoolean("components.enabled");
-        attributesAction = AttributeAction.valueOf(getConfig().getString("attributes.action", "REMOVE"));
-        enchantmentsAction = EnchantAction.valueOf(getConfig().getString("enchantments.action", "REMOVE"));
-        enchantmentsAllowIncompatible = getConfig().getBoolean("enchantments.allow-incompatible");
-        worlds = new HashSet<>(getConfig().getStringList("config.worlds"));
-        worldsBlacklist = getConfig().getBoolean("config.blacklist");
-        playerAlerts = getConfig().getBoolean("config.playeralerts");
-        alertCooldown = getConfig().getLong("config.alert-cooldown", 100);
-        components = getConfig().getStringList("components.blocked");
-        giveCooldownSeconds = getConfig().getLong("config.give-cooldown", 0);
-
-
-        // Get component types from list in config
-        resolvedComponents = new ArrayList<>();
-        for (String name : components) {
-            NamespacedKey key = NamespacedKey.fromString(name);
-            if (key==null) continue;
-            DataComponentType type = Registry.DATA_COMPONENT_TYPE.get(key);
-            if (type == null) continue;
-            resolvedComponents.add(type);
-        }
-
-    }
-
     @Override
     public void onEnable() {
         // Plugin startup logic
+        config = new ConfigUtil(getConfig());
 
         saveDefaultConfig();
         if (!getConfig().isSet("version")) {
@@ -89,7 +42,6 @@ public final class CreativeItemControl extends JavaPlugin {
             updateConfig();
         }
 
-        loadConfigCache();
         MessageUtil messageUtil = new MessageUtil(this);
 
         ItemListener listener = new ItemListener(this, messageUtil);
@@ -138,12 +90,12 @@ public final class CreativeItemControl extends JavaPlugin {
         String key = targetId + ":" + itemId;
         Long last = giveCooldowns.get(key);
         if (last == null) return false;
-        return (System.currentTimeMillis() - last) < giveCooldownSeconds * 1000L;
+        return (System.currentTimeMillis() - last) < config.giveCooldownSeconds * 1000L;
     }
     public long getGiveCooldownRemaining(UUID targetId, String itemId) {
         String key = targetId + ":" + itemId;
         Long last = giveCooldowns.get(key);
-        return giveCooldownSeconds - (System.currentTimeMillis() - last) / 1000L;
+        return config.giveCooldownSeconds - (System.currentTimeMillis() - last) / 1000L;
     }
     public void recordGive(UUID targetId, String itemId) {
         giveCooldowns.put(targetId + ":" + itemId, System.currentTimeMillis());

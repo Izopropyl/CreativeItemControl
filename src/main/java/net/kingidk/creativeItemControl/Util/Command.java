@@ -58,13 +58,13 @@ public class Command implements CommandExecutor, TabCompleter {
                 messageUtil.send(sender, "command.specifyplayer");
                 return true;
             }
-            boolean inList = plugin.worlds.contains(target.getWorld().getName());
+            boolean inList = plugin.config.worlds.contains(target.getWorld().getName());
 
-            if (!isAdmin && plugin.worldsBlacklist == inList) {
+            if (!isAdmin && plugin.config.worldsBlacklist == inList) {
                 messageUtil.send(sender, "command.invalidworld");
                 return true;
             }
-            if (!isAdmin && plugin.giveCooldownSeconds > 0 && plugin.isOnGiveCooldown(target.getUniqueId(), args[1])) {
+            if (!isAdmin && plugin.config.giveCooldownSeconds > 0 && plugin.isOnGiveCooldown(target.getUniqueId(), args[1])) {
                 long remaining = plugin.getGiveCooldownRemaining(target.getUniqueId(), args[1]);
                 messageUtil.send(sender, "commands.cooldown", "{time}", String.valueOf(remaining));
                 return true;
@@ -91,7 +91,7 @@ public class Command implements CommandExecutor, TabCompleter {
 
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             plugin.reloadConfig();
-            plugin.loadConfigCache();
+            plugin.config = new ConfigUtil(plugin.getConfig());
             messageUtil.send(sender, "commands.reload");
             return true;
         }

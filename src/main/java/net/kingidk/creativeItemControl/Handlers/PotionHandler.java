@@ -18,7 +18,7 @@ public class PotionHandler implements ItemCheck {
     @Override
     public void check(ItemCheckContext ctx) {
         if (ctx.isCancelled()) return;
-        if (!plugin.potionsEnabled) return;
+        if (!plugin.config.potionsEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.potions")) return;
 
         switch (ctx.item.getType()) {
@@ -30,7 +30,7 @@ public class PotionHandler implements ItemCheck {
         PotionMeta potionMeta = (PotionMeta) ctx.meta;
 
         if (potionMeta.hasCustomEffects()) {
-            if (plugin.playerAlerts) {
+            if (plugin.config.playerAlerts) {
                 messageUtil.sendAlert(ctx.player, "alerts.potions");
             }
             ctx.cancel();

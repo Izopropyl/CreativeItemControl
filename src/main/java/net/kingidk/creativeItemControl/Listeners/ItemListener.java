@@ -34,8 +34,8 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void  onCreativeInventory(InventoryCreativeEvent e) {
-        boolean inList = plugin.worlds.contains(e.getWhoClicked().getWorld().getName());
-        if (plugin.worldsBlacklist == inList) return;
+        boolean inList = plugin.config.worlds.contains(e.getWhoClicked().getWorld().getName());
+        if (plugin.config.worldsBlacklist == inList) return;
 
         if (e.getWhoClicked().hasPermission("cic.bypass")) return;
 
@@ -83,12 +83,12 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void onInventorySlotChange(PlayerInventorySlotChangeEvent e) {
-        if (!plugin.masterEnabled) return;
+        if (!plugin.config.masterEnabled) return;
         if (e.getSlot() < 0) return;
         if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) return;
 
-        boolean inList = plugin.worlds.contains(e.getPlayer().getWorld().getName());
-        if (plugin.worldsBlacklist == inList) return;
+        boolean inList = plugin.config.worlds.contains(e.getPlayer().getWorld().getName());
+        if (plugin.config.worldsBlacklist == inList) return;
 
         if (e.getPlayer().hasPermission("cic.bypass")) return;
 

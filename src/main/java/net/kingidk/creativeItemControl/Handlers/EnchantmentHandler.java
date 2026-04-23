@@ -23,7 +23,7 @@ public class EnchantmentHandler implements ItemCheck{
     @Override
     public void check(ItemCheckContext ctx) {
         if (ctx.isCancelled()) return;
-        if (!plugin.enchantmentsEnabled) return;
+        if (!plugin.config.enchantmentsEnabled) return;
         if (ctx.player.hasPermission("cic.bypass.enchantments")) return;
 
         Map<Enchantment, Integer> enchants = ctx.meta.getEnchants();
@@ -46,7 +46,7 @@ public class EnchantmentHandler implements ItemCheck{
 
             seen.add(enchantment);
         }
-        if (found && plugin.playerAlerts) {
+        if (found && plugin.config.playerAlerts) {
                 messageUtil.sendAlert(ctx.player, "alerts.enchantments");
 
         }
@@ -56,7 +56,7 @@ public class EnchantmentHandler implements ItemCheck{
     }
     public boolean incompatibleItem(ItemCheckContext ctx, Enchantment enchantment) {
         if (!enchantment.canEnchantItem(ctx.item)) {
-            switch (plugin.enchantmentsAction) {
+            switch (plugin.config.enchantmentsAction) {
                 case LOWER, REMOVE -> ctx.meta.removeEnchant(enchantment);
                 case DELETE -> ctx.cancel();
                 case null, default -> {}
@@ -67,7 +67,7 @@ public class EnchantmentHandler implements ItemCheck{
 
     public boolean impossibleLevel(ItemCheckContext ctx, Enchantment enchantment, int level) {
         if (level > enchantment.getMaxLevel()) {
-            switch (plugin.enchantmentsAction) {
+            switch (plugin.config.enchantmentsAction) {
                 case LOWER -> ctx.meta.addEnchant(enchantment, enchantment.getMaxLevel(), true);
                 case REMOVE -> ctx.meta.removeEnchant(enchantment);
                 case DELETE -> ctx.cancel();
@@ -79,10 +79,10 @@ public class EnchantmentHandler implements ItemCheck{
 
 
     public boolean incompatibleEnchantment(ItemCheckContext ctx, Enchantment enchantment, Set<Enchantment> seen) {
-        if (plugin.enchantmentsAllowIncompatible) return false;
+        if (plugin.config.enchantmentsAllowIncompatible) return false;
         for (Enchantment e : seen) {
             if (enchantment.conflictsWith(e)) {
-                switch (plugin.enchantmentsAction) {
+                switch (plugin.config.enchantmentsAction) {
                     case LOWER, REMOVE -> ctx.meta.removeEnchant(enchantment);
                     case DELETE -> ctx.cancel();
                     case null, default -> {

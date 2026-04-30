@@ -5,6 +5,7 @@ import net.kingidk.creativeItemControl.Util.Command;
 import net.kingidk.creativeItemControl.Util.ConfigUtil;
 import net.kingidk.creativeItemControl.Util.ExcludedItemStore;
 import net.kingidk.creativeItemControl.Util.MessageUtil;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,7 +34,11 @@ public final class CreativeItemControl extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        // Bstats
+        final int PLUGINID = 31021;
+        Metrics metrics = new Metrics(this, PLUGINID);
+
+
         config = new ConfigUtil(getConfig());
 
         saveDefaultConfig();
